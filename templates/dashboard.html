@@ -149,6 +149,9 @@
 
         <h5 class="card-title">Earnings</h5>
         <p class="earnings" id="earnings">${{ profile.earnings }}</p>
+        <button class="btn btn-danger mt-2" onclick="showWithdrawMessage()">
+    Withdraw Funds
+</button>
       </div>
     </div>
 
@@ -191,6 +194,110 @@
     </table>
   </div>
 </div>
+
+
+
+<div class="card text-center p-3 shadow-sm">
+  <h4>Total Investors</h4>
+  <h2 id="investorCount">5,842</h2>
+  <p class="text-muted">Trusted investors worldwide</p>
+</div>
+
+<div class="text-center mt-5 mb-4">
+  <button class="btn btn-success btn-lg" onclick="showInvestmentInfo()">
+    💼 Click to Start Investing
+  </button>
+</div>
+
+
+
+
+
+
+<div class="card mt-4">
+  <div class="card-body">
+    <h4 class="card-title">Investment Plans</h4>
+
+    <div class="row mt-3">
+
+      <div class="col-md-4">
+        <div class="card p-3 text-center shadow-sm">
+          <h5>Starter Plan</h5>
+          <p>Investment: <strong>$200 – $1,500</strong></p>
+          <p>Daily Return: <strong>5%</strong></p>
+          <p>Duration: 7 Days</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+  <div class="card p-3 text-center shadow-sm border-primary position-relative">
+
+    <!-- MOST POPULAR BADGE -->
+    <span style="
+        position:absolute;
+        top:-10px;
+        right:-10px;
+        background:#0d6efd;
+        color:white;
+        padding:5px 10px;
+        font-size:12px;
+        border-radius:20px;
+        font-weight:bold;">
+        MOST POPULAR
+    </span>
+
+    <h5>Growth Plan</h5>
+    <p>Investment: <strong>$1,500 – $5,000</strong></p>
+    <p>Daily Return: <strong>5%</strong></p>
+    <p>Duration: 14 Days</p>
+  </div>
+</div>
+
+      <div class="col-md-4">
+        <div class="card p-3 text-center shadow-sm border-warning">
+          <h5>Premium Plan</h5>
+          <p>Investment: <strong>$5,000 – Unlimited</strong></p>
+          <p>Daily Return: <strong>15%</strong></p>
+          <p>Duration: 30 Days</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<div class="text-center mt-4">
+  <p class="mb-2"><strong>Security & Protection</strong></p>
+
+  <span class="badge bg-success p-2 m-1">SSL Secured</span>
+  <span class="badge bg-primary p-2 m-1">256-bit Encryption</span>
+  <span class="badge bg-dark p-2 m-1">Trusted Platform</span>
+  <span class="badge bg-warning text-dark p-2 m-1">Secure Payments</span>
+</div>
+
+<div class="card mt-4">
+  <div class="card-body">
+    <h4 class="card-title">What Our Investors Say</h4>
+
+    <blockquote class="blockquote mt-3">
+      <p>"I started with the Starter Plan and within a week I saw consistent returns. The platform is reliable and easy to use."</p>
+      <footer class="blockquote-footer">Michael A., UK</footer>
+    </blockquote>
+
+    <blockquote class="blockquote">
+      <p>"Fast earnings updates and smooth dashboard experience. Highly recommended for anyone looking to grow their funds."</p>
+      <footer class="blockquote-footer">Sarah K., Canada</footer>
+    </blockquote>
+
+    <blockquote class="blockquote">
+      <p>"Customer support guided me through the process and my investment has been growing steadily."</p>
+      <footer class="blockquote-footer">David O., USA</footer>
+    </blockquote>
+
+  </div>
+</div>
+
 
 <!-- Bootstrap JS & Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
@@ -407,6 +514,51 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script>
+function showWithdrawMessage() {
+  alert(
+`Withdrawal Processing Notice
+
+Your withdrawal request cannot be completed at this time.
+
+To ensure secure processing and compliance with platform policies, withdrawals are temporarily restricted on your account.
+
+Please contact your account sponsor or support representative for assistance.
+
+We appreciate your patience and cooperation.`
+  );
+}
+</script>
+
+<script>
+function showInvestmentInfo() {
+  alert(
+`Investment Activation Required
+
+To begin investing, you will need the official company wallet address assigned to your onboarding channel.
+
+Please contact your referral partner or account sponsor to receive the authorized wallet details and activation guidance.
+
+This step ensures proper account tracking and secure allocation of your investment.
+
+Thank you for choosing our platform.`
+  );
+}
+</script>
+
+<script>
+let count = 0;
+let target = 5842;
+
+let counter = setInterval(() => {
+  count += 25;
+  if(count >= target){
+    count = target;
+    clearInterval(counter);
+  }
+  document.getElementById("investorCount").innerText = count.toLocaleString();
+}, 20);
+</script>
 
 </body>
 </html>
