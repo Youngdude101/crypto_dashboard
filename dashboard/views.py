@@ -15,25 +15,7 @@ import requests
 # -------------------------
 @login_required
 def dashboard(request):
-    # ensures profile always exists
-    profile, created = Profile.objects.get_or_create(user=request.user)
-
-    today = date.today()
-
-    # --- DAILY EARNINGS LOGIC ---
-    if profile.last_earning_update != today:
-        profile.balance += profile.earnings
-        profile.last_earning_update = today
-        profile.save()
-
-    # Last 10 transactions
-    transactions = Transaction.objects.filter(user=request.user).order_by('-created_at')[:10]
-
-    return render(request, 'dashboard.html', {
-        'profile': profile,
-        'transactions': transactions
-    })
-
+    return render(request, 'dashboard.html', {})
 
 # -------------------------
 # SIGNUP VIEW
