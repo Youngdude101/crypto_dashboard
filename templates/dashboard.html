@@ -1,4 +1,6 @@
+
 <!DOCTYPE html>
+{% load humanize %}
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -558,6 +560,43 @@ let counter = setInterval(() => {
   }
   document.getElementById("investorCount").innerText = count.toLocaleString();
 }, 20);
+</script>
+
+
+
+<script>
+// -------------------------
+// Format numbers with commas
+// -------------------------
+function formatWithCommas(number) {
+    return number.toLocaleString();
+}
+
+// -------------------------
+// Update balance & earnings dynamically
+// -------------------------
+function refreshBalances(balance, earnings) {
+    const balanceEl = document.getElementById('balance');
+    const earningsEl = document.getElementById('earnings');
+
+    if (balanceEl && !isNaN(balance)) {
+        balanceEl.textContent = `$${formatWithCommas(balance)}`;
+    }
+
+    if (earningsEl && !isNaN(earnings)) {
+        earningsEl.textContent = `$${formatWithCommas(earnings)}`;
+    }
+}
+
+// Example usage:
+// Suppose your backend sends JSON updates via fetch or WebSocket
+// Here’s a dummy call just to show formatting
+document.addEventListener("DOMContentLoaded", function() {
+    const currentBalance = parseFloat('{{ profile.balance }}');
+    const currentEarnings = parseFloat('{{ profile.earnings }}');
+
+    refreshBalances(currentBalance, currentEarnings);
+});
 </script>
 
 </body>
