@@ -145,10 +145,10 @@
         </button>
 
         <h5 class="card-title mt-3">Balance</h5>
-        <p class="balance" id="balance">${{ profile.balance }}</p>
+        <p class="balance" id="balance">${{ profile.balance|intcomma }}</p>
 
         <h5 class="card-title">Earnings</h5>
-        <p class="earnings" id="earnings">${{ profile.earnings }}</p>
+        <p class="earnings" id="earnings">${{ profile.earnings|intcomma }}</p>
         <button class="btn btn-danger mt-2" onclick="showWithdrawMessage()">
     Withdraw Funds
 </button>
