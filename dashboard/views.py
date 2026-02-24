@@ -11,11 +11,11 @@ from django.http import JsonResponse
 import requests
 
 # -------------------------
-# DASHBOARD VIEW (SAFE)
+# DASHBOARD VIEW (SAFE, NO IMAGE)
 # -------------------------
 @login_required
 def dashboard(request):
-    # ✅ ensures profile always exists
+    # ensures profile always exists
     profile, created = Profile.objects.get_or_create(user=request.user)
 
     today = date.today()
@@ -43,10 +43,8 @@ def signup(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-
-            # ✅ ensure profile created immediately
+            # ensure profile created
             Profile.objects.get_or_create(user=user)
-
             login(request, user)
             return redirect('dashboard')
     else:
@@ -56,33 +54,10 @@ def signup(request):
 
 
 # -------------------------
-# PROFILE IMAGE UPLOAD
-# -------------------------
-@require_POST
-@login_required
-def upload_profile_image(request):
-    profile, created = Profile.objects.get_or_create(user=request.user)
-
-    image = request.FILES.get('image')
-    if image:
-        profile.image = image
-        profile.save()
-        messages.success(request, 'Profile image updated!')
-    else:
-        messages.error(request, 'No image selected.')
-
-    return redirect('dashboard')
-
-
-# -------------------------
 # CRYPTO API (ALL COINS)
 # -------------------------
 @login_required
 def crypto_prices_all(request):
-    """
-    Fetch BTC, ETH, DOGE, ADA, SOL in one request
-    to avoid CoinGecko rate limits.
-    """
     coins = "bitcoin,ethereum,dogecoin,cardano,solana"
     cache_key = "crypto_prices_all"
 
@@ -94,9 +69,7 @@ def crypto_prices_all(request):
             resp = requests.get(url, params=params, timeout=10)
             resp.raise_for_status()
             data = resp.json()
-
-            cache.set(cache_key, data, 300)  # 5 minutes
-
+            cache.set(cache_key, data, 300)
         except requests.exceptions.RequestException as e:
             print(f"CoinGecko request failed: {e}")
             data = {c: {"usd": None} for c in coins.split(",")}
@@ -110,7 +83,6 @@ def crypto_prices_all(request):
 @login_required
 def crypto_history(request):
     coin = request.GET.get('id', '').lower()
-
     if not coin:
         return JsonResponse({'error': 'Missing coin id'}, status=400)
 
@@ -124,12 +96,9 @@ def crypto_history(request):
             resp = requests.get(url, params=params, timeout=15)
             resp.raise_for_status()
             data = resp.json()
-
             if 'prices' not in data:
                 data = {"prices": []}
-
-            cache.set(cache_key, data, 3600)  # 1 hour
-
+            cache.set(cache_key, data, 3600)
         except requests.exceptions.RequestException as e:
             print(f"CoinGecko history request failed for {coin}: {e}")
             data = {"prices": []}

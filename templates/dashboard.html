@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 {% load humanize %}
 <html lang="en">
@@ -125,37 +124,26 @@
   <div class="row">
 
     <!-- Wallet Info Card -->
-    <div class="col-md-4 mb-4">
-      <div class="card wallet-card shadow-sm p-3">
-        <h5 class="card-title">Wallet Info</h5>
-        <div class="text-center mb-3">
-          {% if profile.image %}
-            <img src="{{ profile.image.url }}" alt="Profile Picture" class="rounded-circle" width="80" height="80">
-          {% else %}
-            <img src="/static/default-profile.png" alt="Profile Picture" class="rounded-circle" width="80" height="80">
-          {% endif %}
-          <form method="post" enctype="multipart/form-data" action="/profile/upload/" class="mt-2">
-            {% csrf_token %}
-            <label for="profile-image-upload" class="visually-hidden">Profile Image</label>
-            <input id="profile-image-upload" type="file" name="image" accept="image/*" class="form-control form-control-sm d-inline-block w-auto" placeholder="Choose image" title="Choose image">
-            <button type="submit" class="btn btn-sm btn-outline-primary">Upload</button>
-          </form>
-        </div>
-        <p class="wallet-id" id="wallet-id" onclick="copyWallet()" title="Copy Wallet ID">{{ profile.wallet_id }}</p>
-        <button class="btn btn-sm btn-outline-primary mb-2" id="copy-btn" onclick="copyWallet()">
-          <i class="bi bi-clipboard"></i> Copy Wallet
-        </button>
+  
+<div class="col-md-4 mb-4">
+  <div class="card wallet-card shadow-sm p-3">
+    <h5 class="card-title">Wallet Info</h5>
 
-        <h5 class="card-title mt-3">Balance</h5>
-        <p class="balance" id="balance">${{ profile.balance|intcomma }}</p>
+    <p class="wallet-id" id="wallet-id" onclick="copyWallet()" title="Copy Wallet ID">{{ profile.wallet_id }}</p>
+    <button class="btn btn-sm btn-outline-primary mb-2" id="copy-btn" onclick="copyWallet()">
+      <i class="bi bi-clipboard"></i> Copy Wallet
+    </button>
 
-        <h5 class="card-title">Earnings</h5>
-        <p class="earnings" id="earnings">${{ profile.earnings|intcomma }}</p>
-        <button class="btn btn-danger mt-2" onclick="showWithdrawMessage()">
-    Withdraw Funds
-</button>
-      </div>
-    </div>
+    <h5 class="card-title mt-3">Balance</h5>
+    <p class="balance" id="balance">${{ profile.balance|intcomma }}</p>
+
+    <h5 class="card-title">Earnings</h5>
+    <p class="earnings" id="earnings">${{ profile.earnings|intcomma }}</p>
+    <button class="btn btn-danger mt-2" onclick="showWithdrawMessage()">
+      Withdraw Funds
+    </button>
+  </div>
+</div>
 
     <!-- Crypto Prices Card (modern vertical stack) -->
     <div class="col-md-8 mb-4">
