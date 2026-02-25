@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import dj_database_url
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -57,13 +58,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-# Database
-import dj_database_url
-
+# -------------------------------------------------------
+# DATABASE — with connection timeout so it never hangs
+# -------------------------------------------------------
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.environ.get('DATABASE_URL')
-    )
+    'default': {
+        **dj_database_url.config(default=os.environ.get('DATABASE_URL')),
+        'CONN_MAX_AGE': 60,
+        'OPTIONS': {
+            'connect_timeout': 10,
+        }
+    }
+}
+
+# -------------------------------------------------------
+# CACHE — dummy cache to avoid any cache-related hangs
+# -------------------------------------------------------
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
 }
 
 # Password validation
