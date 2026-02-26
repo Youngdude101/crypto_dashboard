@@ -4,37 +4,81 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Crypto Dashboard</title>
+<title>CryptoNest | Dashboard</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-    .card-title { font-weight: bold; }
+    :root {
+      --brand: #0d6efd;
+      --brand-dark: #0a2540;
+      --green: #198754;
+      --red: #dc3545;
+    }
+
+    body { font-family: 'DM Sans', sans-serif; }
+    h1,h2,h3,h4,h5,.navbar-brand { font-family: 'Syne', sans-serif; }
+
+    .card-title { font-weight: 700; }
     .wallet-card, .crypto-card { border-radius: 1rem; }
     .balance, .earnings { font-size: 1.5rem; font-weight: 600; }
     .balance { color: #198754; background: linear-gradient(90deg, #e0ffe0 0%, #f8fff8 100%); border-radius: 0.5rem; padding: 0.25em 0.75em; display: inline-block; }
     .earnings { color: #0d6efd; background: linear-gradient(90deg, #e0f0ff 0%, #f8fbff 100%); border-radius: 0.5rem; padding: 0.25em 0.75em; display: inline-block; transition: background 0.5s; }
-    .wallet-id { font-size: 0.9rem; word-break: break-all; cursor: pointer; }
+    .wallet-id { font-size: 0.9rem; word-break: break-all; cursor: pointer; font-family: monospace; }
     .wallet-id.copied { background: #d1e7dd; color: #198754; transition: background 0.5s, color 0.5s; }
-    /* Earnings highlight animation */
     .earnings-update { animation: highlight 1s ease-in-out; }
     @keyframes highlight { 0% { background-color: #ffff99; } 100% { background-color: transparent; } }
 
-    @media (max-width: 768px) {
-      .wallet-card, .crypto-card { margin-bottom: 1.5rem; }
-      .navbar .container-fluid { flex-direction: column; align-items: flex-start; }
-      .navbar .d-flex { flex-direction: column; width: 100%; }
-      .navbar .navbar-text, .navbar .btn { margin-bottom: 0.5rem; }
-      .navbar .navbar-text { font-size: 1rem; }
-      .balance, .earnings { font-size: 1.1rem; }
-      .container { padding: 0 0.5rem; }
+    /* ── Welcome Banner ── */
+    .welcome-banner {
+      background: linear-gradient(135deg, #0a2540 0%, #0d6efd 100%);
+      color: #fff;
+      border-radius: 1.25rem;
+      padding: 1.5rem 2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      box-shadow: 0 4px 24px rgba(13,110,253,0.18);
     }
-    @media (max-width: 576px) {
-        .navbar .navbar-text { display: block; margin-bottom: 0.5rem; }
-        .navbar .btn { width: 100%; margin-bottom: 0.5rem; }
-        .wallet-card, .crypto-card { padding: 1rem 0.5rem; }
-    }
+    .welcome-banner .welcome-text h2 { font-size: 1.6rem; font-weight: 800; margin: 0; }
+    .welcome-banner .welcome-text p { margin: 0.25rem 0 0; opacity: 0.85; font-size: 0.95rem; }
+    .welcome-banner .welcome-icon { font-size: 3rem; opacity: 0.85; }
 
-    /* Dark/Light mode */
+    /* ── Activity Feed ── */
+    .activity-feed {
+      background: #fff;
+      border-radius: 1rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+      padding: 1rem 1.25rem;
+      overflow: hidden;
+      height: 220px;
+      position: relative;
+    }
+    .activity-feed h6 { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 0.75rem; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; color: #555; }
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.88rem;
+      animation: slideIn 0.5s ease;
+    }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .activity-dot.invest { background: #198754; }
+    .activity-dot.withdraw { background: #dc3545; }
+    .activity-name { font-weight: 600; color: #222; }
+    .activity-action { color: #555; }
+    .activity-amount { font-weight: 700; margin-left: auto; }
+    .activity-amount.invest { color: #198754; }
+    .activity-amount.withdraw { color: #dc3545; }
+    .activity-time { font-size: 0.75rem; color: #aaa; margin-left: 0.5rem; }
+
+    /* ── Dark mode ── */
     body.dark-mode { background: #181a1b; color: #f8f9fa; }
     body.dark-mode .card { background: #23272b; color: #f8f9fa; }
     body.dark-mode .navbar { background: #23272b !important; }
@@ -42,52 +86,72 @@
     body.dark-mode .btn-outline-light { color: #f8f9fa; border-color: #f8f9fa; }
     body.dark-mode .balance { background: #223322; color: #7fff7f; }
     body.dark-mode .earnings { background: #223355; color: #7faaff; }
+    body.dark-mode .activity-feed { background: #23272b; }
+    body.dark-mode .activity-item { border-bottom-color: #333; }
+    body.dark-mode .activity-name { color: #f8f9fa; }
+    body.dark-mode .activity-action { color: #aaa; }
+    body.dark-mode .activity-feed h6 { color: #aaa; }
+    body.dark-mode .crypto-card-modern { background: #23272b; box-shadow: 0 2px 8px rgba(0,0,0,0.18); }
+    body.dark-mode .about-section { background: #23272b; color: #f8f9fa; }
+    body.dark-mode .about-section .text-muted { color: #aaa !important; }
 
+    /* ── Light mode ── */
     body.light-mode { background: #f8f9fa; color: #222; }
     body.light-mode .navbar { background: #fff !important; color: #222; }
     body.light-mode .card { background: #fff; color: #222; }
     body.light-mode .btn-outline-light { color: #222; border-color: #ccc; }
     body.light-mode .btn-outline-light:hover { background: #e2e6ea; }
 
-    #profile-image-upload { max-width:180px; }
-
-    /* Modern Crypto Card Styles */
-    .crypto-list-section { margin-top: 2rem; }
+    /* ── Crypto Cards ── */
+    .crypto-list-section { margin-top: 0; }
     .crypto-card-modern {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: #fff;
-      border-radius: 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+      background: #fff; border-radius: 1rem;
       box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-      margin-bottom: 1.2rem;
-      padding: 1rem 1.2rem;
+      margin-bottom: 1rem; padding: 0.85rem 1.2rem;
       transition: background 0.3s;
     }
-    body.dark-mode .crypto-card-modern {
-      background: #23272b;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
-    }
-    .crypto-symbol { font-size: 1.2rem; font-weight: 700; min-width: 60px; text-align: left; }
+    .crypto-symbol { font-size: 1.1rem; font-weight: 700; min-width: 60px; font-family: 'Syne', sans-serif; }
     .crypto-trend { flex: 1; min-width: 100px; max-width: 160px; margin: 0 1rem; }
-    .crypto-price { font-size: 1.1rem; font-weight: 600; text-align: right; }
-    .crypto-change { font-size: 1rem; font-weight: 500; margin-left: 0.5rem; text-align: right; }
+    .crypto-price { font-size: 1rem; font-weight: 600; text-align: right; }
+    .crypto-change { font-size: 0.95rem; font-weight: 500; margin-left: 0.5rem; text-align: right; }
     .crypto-change.positive { color: #198754; }
     .crypto-change.negative { color: #dc3545; }
-    .crypto-card-modern:not(:last-child) { margin-bottom: 1.2rem; }
+
+    /* ── About Section ── */
+    .about-section {
+      background: #fff;
+      border-radius: 1.25rem;
+      padding: 2.5rem 2rem;
+      margin-top: 2rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .about-section h3 { font-family: 'Syne', sans-serif; font-weight: 800; color: var(--brand-dark); }
+    .about-stat { text-align: center; padding: 1rem; }
+    .about-stat .stat-number { font-size: 2rem; font-weight: 800; font-family: 'Syne', sans-serif; color: var(--brand); }
+    .about-stat .stat-label { font-size: 0.85rem; color: #666; margin-top: 0.25rem; }
+    .feature-item { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.25rem; }
+    .feature-icon { width: 42px; height: 42px; border-radius: 10px; background: linear-gradient(135deg, #e0f0ff, #c7e0ff); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .feature-text h6 { font-family: 'Syne', sans-serif; font-weight: 700; margin: 0 0 0.2rem; font-size: 0.95rem; }
+    .feature-text p { margin: 0; font-size: 0.85rem; color: #666; }
+
+    /* ── FAQ ── */
+    .faq-section { margin-top: 2rem; }
+    .faq-section .accordion-button { font-family: 'Syne', sans-serif; font-weight: 600; }
+
+    /* ── Dark mode toggle ── */
+    #darkModeToggleContainer {
+      position: fixed; top: 1.5rem; right: 2rem; z-index: 1050;
+    }
+
+    /* ── Responsive ── */
     @media (max-width: 768px) {
+      .wallet-card, .crypto-card { margin-bottom: 1.5rem; }
+      .welcome-banner .welcome-icon { display: none; }
+      .welcome-banner .welcome-text h2 { font-size: 1.2rem; }
       .crypto-card-modern { flex-direction: column; align-items: stretch; padding: 1rem 0.5rem; }
       .crypto-symbol, .crypto-price, .crypto-change { text-align: left; }
       .crypto-trend { margin: 0.5rem 0; }
-    }
-
-    #darkModeToggleContainer {
-      position: fixed;
-      top: 1.5rem;
-      right: 2rem;
-      z-index: 1050;
-    }
-    @media (max-width: 768px) {
       #darkModeToggleContainer { position: absolute; top: 0.5rem; right: 0.5rem; }
     }
 </style>
@@ -97,17 +161,19 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">CryptoDash</a>
-    <div class="d-flex">
-      <span class="navbar-text text-white me-3">
-        Hello, {{ profile.user.username }}
+    <a class="navbar-brand fw-bold" href="#">🪙 CryptoNest</a>
+    <div class="d-flex align-items-center gap-2">
+      <span class="navbar-text text-white">
+        <i class="bi bi-person-circle me-1"></i> {{ profile.user.username }}
       </span>
-      <a href="/accounts/password_change/" class="btn btn-outline-light me-2" title="Change Password">
+      <a href="/accounts/password_change/" class="btn btn-outline-light btn-sm" title="Change Password">
         <i class="bi bi-gear-fill"></i>
       </a>
       <form method="post" action="{% url 'logout' %}" class="d-inline">
         {% csrf_token %}
-        <button class="btn btn-outline-light" type="submit">Logout</button>
+        <button class="btn btn-outline-light btn-sm" type="submit">
+          <i class="bi bi-box-arrow-right me-1"></i>Logout
+        </button>
       </form>
     </div>
   </div>
@@ -116,57 +182,65 @@
 <!-- Dark mode toggle -->
 <div class="form-check form-switch" id="darkModeToggleContainer">
   <input class="form-check-input" type="checkbox" id="darkModeSwitch" onclick="toggleDarkMode()">
-  <label class="form-check-label" for="darkModeSwitch">Dark Mode</label>
+  <label class="form-check-label small" for="darkModeSwitch">Dark</label>
 </div>
 
 <!-- Main Content -->
-<div class="container mt-5">
+<div class="container mt-4">
+
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <div class="welcome-text">
+      <h2>Welcome back, {{ profile.user.username }}! 👋</h2>
+      <p>Here's what's happening with your investments today.</p>
+    </div>
+    <div class="welcome-icon">💼</div>
+  </div>
+
   <div class="row">
 
     <!-- Wallet Info Card -->
-  
-<div class="col-md-4 mb-4">
-  <div class="card wallet-card shadow-sm p-3">
-    <h5 class="card-title">Wallet Info</h5>
+    <div class="col-md-4 mb-4">
+      <div class="card wallet-card shadow-sm p-3 h-100">
+        <h5 class="card-title"><i class="bi bi-wallet2 me-2 text-primary"></i>Wallet Info</h5>
+        <p class="wallet-id" id="wallet-id" onclick="copyWallet()" title="Copy Wallet ID">{{ profile.wallet_id }}</p>
+        <button class="btn btn-sm btn-outline-primary mb-3" id="copy-btn" onclick="copyWallet()">
+          <i class="bi bi-clipboard"></i> Copy Wallet
+        </button>
+        <h5 class="card-title"><i class="bi bi-cash-coin me-2 text-success"></i>Balance</h5>
+        <p class="balance" id="balance">${{ profile.balance|intcomma }}</p>
+        <h5 class="card-title mt-2"><i class="bi bi-graph-up-arrow me-2 text-primary"></i>Earnings</h5>
+        <p class="earnings" id="earnings">${{ profile.earnings|intcomma }}</p>
+        <button class="btn btn-danger mt-2" onclick="showWithdrawMessage()">
+          <i class="bi bi-arrow-up-circle me-1"></i>Withdraw Funds
+        </button>
+      </div>
+    </div>
 
-    <p class="wallet-id" id="wallet-id" onclick="copyWallet()" title="Copy Wallet ID">{{ profile.wallet_id }}</p>
-    <button class="btn btn-sm btn-outline-primary mb-2" id="copy-btn" onclick="copyWallet()">
-      <i class="bi bi-clipboard"></i> Copy Wallet
-    </button>
-
-    <h5 class="card-title mt-3">Balance</h5>
-    <p class="balance" id="balance">${{ profile.balance|intcomma }}</p>
-
-    <h5 class="card-title">Earnings</h5>
-    <p class="earnings" id="earnings">${{ profile.earnings|intcomma }}</p>
-    <button class="btn btn-danger mt-2" onclick="showWithdrawMessage()">
-      Withdraw Funds
-    </button>
-  </div>
-</div>
-
-    <!-- Crypto Prices Card (modern vertical stack) -->
+    <!-- Right column: Crypto + Activity Feed -->
     <div class="col-md-8 mb-4">
+
+      <!-- Live Activity Feed -->
+      <div class="activity-feed mb-4">
+        <h6><i class="bi bi-activity me-1"></i> Live Platform Activity</h6>
+        <div id="activity-list"></div>
+      </div>
+
+      <!-- Crypto Prices -->
       <div class="crypto-list-section">
-        <h5 class="mb-3">Live Crypto Prices</h5>
+        <h5 class="mb-3"><i class="bi bi-currency-bitcoin me-2"></i>Live Crypto Prices</h5>
         <div id="crypto-list"></div>
       </div>
     </div>
 
   </div>
 
-  <!-- Transaction History Section -->
-  <div class="table-responsive mt-4">
-    <h5>Transaction History</h5>
+  <!-- Transaction History -->
+  <div class="table-responsive mt-2">
+    <h5><i class="bi bi-clock-history me-2"></i>Transaction History</h5>
     <table class="table table-striped table-hover">
       <thead>
-        <tr>
-          <th>Date</th>
-          <th>Type</th>
-          <th>Coin</th>
-          <th>Amount</th>
-          <th>Status</th>
-        </tr>
+        <tr><th>Date</th><th>Type</th><th>Coin</th><th>Amount</th><th>Status</th></tr>
       </thead>
       <tbody>
         {% for tx in transactions %}
@@ -178,135 +252,226 @@
           <td><span class="badge {% if tx.status == 'Completed' %}bg-success{% else %}bg-warning text-dark{% endif %}">{{ tx.status }}</span></td>
         </tr>
         {% empty %}
-        <tr><td colspan="5" class="text-center">No transactions yet.</td></tr>
+        <tr><td colspan="5" class="text-center text-muted">No transactions yet.</td></tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
-</div>
 
-
-
-<div class="card text-center p-3 shadow-sm">
-  <h4>Total Investors</h4>
-  <h2 id="investorCount">5,842</h2>
-  <p class="text-muted">Trusted investors worldwide</p>
-</div>
-
-<div class="text-center mt-5 mb-4">
-  <button class="btn btn-success btn-lg" onclick="showInvestmentInfo()">
-    💼 Click to Start Investing
-  </button>
-</div>
-
-
-
-
-
-
-<div class="card mt-4">
-  <div class="card-body">
-    <h4 class="card-title">Investment Plans</h4>
-
-    <div class="row mt-3">
-
-      <div class="col-md-4">
-        <div class="card p-3 text-center shadow-sm">
-          <h5>Starter Plan</h5>
-          <p>Investment: <strong>$200 – $1,500</strong></p>
-          <p>Daily Return: <strong>5%</strong></p>
-          <p>Duration: 7 Days</p>
-        </div>
+  <!-- Stats Row -->
+  <div class="row text-center mt-4">
+    <div class="col-4">
+      <div class="card p-3 shadow-sm">
+        <div style="font-size:1.8rem;font-weight:800;font-family:'Syne',sans-serif;color:#0d6efd;" id="investorCount">0</div>
+        <div class="text-muted small">Total Investors</div>
       </div>
-
-      <div class="col-md-4">
-  <div class="card p-3 text-center shadow-sm border-primary position-relative">
-
-    <!-- MOST POPULAR BADGE -->
-    <span style="
-        position:absolute;
-        top:-10px;
-        right:-10px;
-        background:#0d6efd;
-        color:white;
-        padding:5px 10px;
-        font-size:12px;
-        border-radius:20px;
-        font-weight:bold;">
-        MOST POPULAR
-    </span>
-
-    <h5>Growth Plan</h5>
-    <p>Investment: <strong>$1,500 – $5,000</strong></p>
-    <p>Daily Return: <strong>5%</strong></p>
-    <p>Duration: 14 Days</p>
-  </div>
-</div>
-
-      <div class="col-md-4">
-        <div class="card p-3 text-center shadow-sm border-warning">
-          <h5>Premium Plan</h5>
-          <p>Investment: <strong>$5,000 – Unlimited</strong></p>
-          <p>Daily Return: <strong>15%</strong></p>
-          <p>Duration: 30 Days</p>
-        </div>
+    </div>
+    <div class="col-4">
+      <div class="card p-3 shadow-sm">
+        <div style="font-size:1.8rem;font-weight:800;font-family:'Syne',sans-serif;color:#198754;">$2.4M+</div>
+        <div class="text-muted small">Total Paid Out</div>
       </div>
-
+    </div>
+    <div class="col-4">
+      <div class="card p-3 shadow-sm">
+        <div style="font-size:1.8rem;font-weight:800;font-family:'Syne',sans-serif;color:#fd7e14;">98%</div>
+        <div class="text-muted small">Satisfaction Rate</div>
+      </div>
     </div>
   </div>
-</div>
 
-
-<div class="text-center mt-4">
-  <p class="mb-2"><strong>Security & Protection</strong></p>
-
-  <span class="badge bg-success p-2 m-1">SSL Secured</span>
-  <span class="badge bg-primary p-2 m-1">256-bit Encryption</span>
-  <span class="badge bg-dark p-2 m-1">Trusted Platform</span>
-  <span class="badge bg-warning text-dark p-2 m-1">Secure Payments</span>
-</div>
-
-<div class="card mt-4">
-  <div class="card-body">
-    <h4 class="card-title">What Our Investors Say</h4>
-
-    <blockquote class="blockquote mt-3">
-      <p>"I started with the Starter Plan and within a week I saw consistent returns. The platform is reliable and easy to use."</p>
-      <footer class="blockquote-footer">Michael A., UK</footer>
-    </blockquote>
-
-    <blockquote class="blockquote">
-      <p>"Fast earnings updates and smooth dashboard experience. Highly recommended for anyone looking to grow their funds."</p>
-      <footer class="blockquote-footer">Sarah K., Canada</footer>
-    </blockquote>
-
-    <blockquote class="blockquote">
-      <p>"Customer support guided me through the process and my investment has been growing steadily."</p>
-      <footer class="blockquote-footer">David O., USA</footer>
-    </blockquote>
-
+  <!-- Start Investing Button -->
+  <div class="text-center mt-4 mb-2">
+    <button class="btn btn-success btn-lg px-5 shadow" onclick="showInvestmentInfo()">
+      💼 Start Investing Now
+    </button>
   </div>
-</div>
 
+  <!-- Investment Plans -->
+  <div class="card mt-4">
+    <div class="card-body">
+      <h4 class="card-title"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>Investment Plans</h4>
+      <div class="row mt-3">
+        <div class="col-md-4 mb-3">
+          <div class="card p-3 text-center shadow-sm h-100">
+            <div style="font-size:2rem;">🌱</div>
+            <h5 class="mt-2">Starter Plan</h5>
+            <p class="text-muted small">Perfect for beginners</p>
+            <p>Investment: <strong>$200 – $1,500</strong></p>
+            <p>Daily Return: <strong class="text-success">5%</strong></p>
+            <p>Duration: <strong>7 Days</strong></p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card p-3 text-center shadow-sm border-primary position-relative h-100">
+            <span style="position:absolute;top:-10px;right:-10px;background:#0d6efd;color:white;padding:5px 10px;font-size:12px;border-radius:20px;font-weight:bold;">MOST POPULAR</span>
+            <div style="font-size:2rem;">🚀</div>
+            <h5 class="mt-2">Growth Plan</h5>
+            <p class="text-muted small">For serious investors</p>
+            <p>Investment: <strong>$1,500 – $5,000</strong></p>
+            <p>Daily Return: <strong class="text-success">5%</strong></p>
+            <p>Duration: <strong>14 Days</strong></p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card p-3 text-center shadow-sm border-warning h-100">
+            <div style="font-size:2rem;">👑</div>
+            <h5 class="mt-2">Premium Plan</h5>
+            <p class="text-muted small">Maximum returns</p>
+            <p>Investment: <strong>$5,000+</strong></p>
+            <p>Daily Return: <strong class="text-success">15%</strong></p>
+            <p>Duration: <strong>30 Days</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About Us Section -->
+  <div class="about-section">
+    <div class="row align-items-center">
+      <div class="col-md-6">
+        <h3>About CryptoNest</h3>
+        <p class="text-muted mt-2">CryptoNest is a trusted crypto investment platform helping everyday people grow their wealth through smart, automated crypto investments. Since our founding, we've helped thousands of investors achieve consistent daily returns.</p>
+        <div class="row mt-4">
+          <div class="col-4 about-stat">
+            <div class="stat-number">5,800+</div>
+            <div class="stat-label">Active Investors</div>
+          </div>
+          <div class="col-4 about-stat">
+            <div class="stat-number">$2.4M</div>
+            <div class="stat-label">Total Paid Out</div>
+          </div>
+          <div class="col-4 about-stat">
+            <div class="stat-number">3 Yrs</div>
+            <div class="stat-label">In Operation</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mt-4 mt-md-0">
+        <div class="feature-item">
+          <div class="feature-icon">🔒</div>
+          <div class="feature-text">
+            <h6>Bank-Grade Security</h6>
+            <p>Your funds and data are protected with 256-bit SSL encryption and multi-layer authentication.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">📈</div>
+          <div class="feature-text">
+            <h6>Consistent Daily Returns</h6>
+            <p>Our algorithmic trading system generates steady returns regardless of market conditions.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-text">
+            <h6>Fast & Transparent</h6>
+            <p>Real-time dashboard updates so you always know exactly how your investment is performing.</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">🌍</div>
+          <div class="feature-text">
+            <h6>Global Community</h6>
+            <p>Investors from over 40 countries trust CryptoNest to grow their wealth every day.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <div class="faq-section">
+    <h4 class="mb-3"><i class="bi bi-question-circle me-2 text-primary"></i>Frequently Asked Questions</h4>
+    <div class="accordion" id="faqAccordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">How do I start investing?</button>
+        </h2>
+        <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Click the "Start Investing Now" button and contact your account sponsor to receive the authorized wallet details. Your investment will be activated within 24 hours.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">When are earnings credited?</button>
+        </h2>
+        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Earnings are credited to your account balance automatically every 24 hours. You can track them in real time on your dashboard.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">How do I withdraw my funds?</button>
+        </h2>
+        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Click the "Withdraw Funds" button on your dashboard and follow the instructions. Withdrawals are processed within 24–48 hours. Please contact your account sponsor for assistance.</div>
+        </div>
+      </div>
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">Is my investment safe?</button>
+        </h2>
+        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">Yes. We use industry-standard 256-bit SSL encryption, secure wallet infrastructure, and strict compliance protocols to protect all investor funds and data.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Security Badges -->
+  <div class="text-center mt-4">
+    <p class="mb-2"><strong>Security & Protection</strong></p>
+    <span class="badge bg-success p-2 m-1"><i class="bi bi-shield-check me-1"></i>SSL Secured</span>
+    <span class="badge bg-primary p-2 m-1"><i class="bi bi-lock me-1"></i>256-bit Encryption</span>
+    <span class="badge bg-dark p-2 m-1"><i class="bi bi-patch-check me-1"></i>Trusted Platform</span>
+    <span class="badge bg-warning text-dark p-2 m-1"><i class="bi bi-credit-card me-1"></i>Secure Payments</span>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="card mt-4 mb-5">
+    <div class="card-body">
+      <h4 class="card-title"><i class="bi bi-chat-quote me-2 text-primary"></i>What Our Investors Say</h4>
+      <div class="row mt-3">
+        <div class="col-md-4">
+          <blockquote class="blockquote">
+            <p class="fs-6">"I started with the Starter Plan and within a week I saw consistent returns. Reliable and easy to use."</p>
+            <footer class="blockquote-footer">Michael A., <cite>UK</cite></footer>
+          </blockquote>
+        </div>
+        <div class="col-md-4">
+          <blockquote class="blockquote">
+            <p class="fs-6">"Fast earnings updates and smooth dashboard experience. Highly recommended for anyone looking to grow their funds."</p>
+            <footer class="blockquote-footer">Sarah K., <cite>Canada</cite></footer>
+          </blockquote>
+        </div>
+        <div class="col-md-4">
+          <blockquote class="blockquote">
+            <p class="fs-6">"Customer support guided me through the process and my investment has been growing steadily."</p>
+            <footer class="blockquote-footer">David O., <cite>USA</cite></footer>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
 
 <!-- Bootstrap JS & Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-// Run after page loads to avoid DOM issues
 document.addEventListener("DOMContentLoaded", function () {
 
-  // =============================
-  // Copy Wallet Helper
-  // =============================
+  // ── Copy Wallet ──
   function copyWallet() {
     const wallet = document.getElementById('wallet-id');
     const copyBtn = document.getElementById('copy-btn');
-
     navigator.clipboard.writeText(wallet.innerText).then(() => {
       wallet.classList.add('copied');
-      copyBtn.innerHTML = '<i class="bi bi-clipboard-check"></i> Wallet ID Copied!';
+      copyBtn.innerHTML = '<i class="bi bi-clipboard-check"></i> Copied!';
       setTimeout(() => {
         wallet.classList.remove('copied');
         copyBtn.innerHTML = '<i class="bi bi-clipboard"></i> Copy Wallet';
@@ -315,39 +480,92 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   window.copyWallet = copyWallet;
 
+  // ── Tooltips ──
+  [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]')).map(el => new bootstrap.Tooltip(el));
 
-  // =============================
-  // Bootstrap Tooltips
-  // =============================
-  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-  tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
-
-
-  // =============================
-  // 🌙 Dark Mode Toggle
-  // =============================
-  const themeToggleBtn = document.getElementById('theme-toggle');
-
-  function toggleTheme() {
-    document.body.classList.toggle('dark-mode');
-    const isDark = document.body.classList.contains('dark-mode');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  }
-
-  // Load saved theme
+  // ── Dark Mode Load ──
   const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark') {
-    document.body.classList.add('dark-mode');
+  if (savedTheme === 'dark') document.body.classList.add('dark-mode');
+
+  // ── Investor Counter ──
+  let count = 0, target = 5842;
+  const counter = setInterval(() => {
+    count += 30;
+    if (count >= target) { count = target; clearInterval(counter); }
+    document.getElementById("investorCount").innerText = count.toLocaleString();
+  }, 20);
+
+  // ── Balance/Earnings Format ──
+  const currentBalance = parseFloat('{{ profile.balance }}');
+  const currentEarnings = parseFloat('{{ profile.earnings }}');
+  const balanceEl = document.getElementById('balance');
+  const earningsEl = document.getElementById('earnings');
+  if (balanceEl && !isNaN(currentBalance)) balanceEl.textContent = `$${currentBalance.toLocaleString()}`;
+  if (earningsEl && !isNaN(currentEarnings)) earningsEl.textContent = `$${currentEarnings.toLocaleString()}`;
+
+  // ── Live Activity Feed ──
+  const names = [
+    'James O.', 'Amara K.', 'Daniel W.', 'Fatima A.', 'Chris M.',
+    'Sofia B.', 'Emmanuel T.', 'Priya S.', 'Lucas R.', 'Ngozi E.',
+    'Tyler H.', 'Aisha N.', 'Marcus L.', 'Chloe P.', 'Ahmed Y.',
+    'Isabella F.', 'Samuel D.', 'Zara Q.', 'Nathan C.', 'Blessing O.',
+    'Ryan J.', 'Mei L.', 'Kevin A.', 'Hannah B.', 'Omar S.',
+    'Grace T.', 'David K.', 'Nadia M.', 'Ethan W.', 'Adaeze C.',
+    'Brandon N.', 'Yuki T.', 'Felix R.', 'Layla H.', 'Victor E.',
+    'Tanya P.', 'Jordan L.', 'Chinwe U.', 'Alex M.', 'Seun F.'
+  ];
+  const investAmounts = [500, 1000, 1500, 2000, 2500, 3000, 5000, 7500, 10000, 200, 800, 1200, 4000, 6000];
+  const withdrawAmounts = [300, 750, 1100, 2200, 3500, 500, 900, 1800, 4500, 250, 600, 1400];
+  const timeLabels = ['just now', '1m ago', '2m ago', '3m ago', '5m ago', '7m ago', '10m ago'];
+
+  const activityList = document.getElementById('activity-list');
+  let activityItems = [];
+
+  function randomFrom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function formatMoney(n) { return '$' + n.toLocaleString(); }
+
+  function generateActivity() {
+    const isInvest = Math.random() > 0.35;
+    const name = randomFrom(names);
+    const masked = name.slice(0, 3) + '***';
+    const amount = isInvest ? randomFrom(investAmounts) : randomFrom(withdrawAmounts);
+    return {
+      type: isInvest ? 'invest' : 'withdraw',
+      name: masked,
+      amount,
+      time: randomFrom(timeLabels)
+    };
   }
 
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', toggleTheme);
+  function renderActivity() {
+    activityList.innerHTML = '';
+    activityItems.slice(0, 4).forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'activity-item';
+      div.innerHTML = `
+        <span class="activity-dot ${item.type}"></span>
+        <span class="activity-name">${item.name}</span>
+        <span class="activity-action">${item.type === 'invest' ? 'invested' : 'withdrew'}</span>
+        <span class="activity-amount ${item.type}">${formatMoney(item.amount)}</span>
+        <span class="activity-time">${item.time}</span>
+      `;
+      activityList.appendChild(div);
+    });
   }
 
+  // Seed initial items
+  for (let i = 0; i < 4; i++) activityItems.push(generateActivity());
+  renderActivity();
 
-  // =============================
-  // Crypto Card Setup
-  // =============================
+  // Add new activity every 4 seconds
+  setInterval(() => {
+    activityItems.unshift(generateActivity());
+    if (activityItems.length > 10) activityItems.pop();
+    renderActivity();
+  }, 4000);
+
+  // ── Crypto Cards ──
   const coins = [
     { id: 'bitcoin', symbol: 'BTC' },
     { id: 'ethereum', symbol: 'ETH' },
@@ -355,7 +573,6 @@ document.addEventListener("DOMContentLoaded", function () {
     { id: 'cardano', symbol: 'ADA' },
     { id: 'dogecoin', symbol: 'DOGE' }
   ];
-
   const cryptoList = document.getElementById('crypto-list');
   let charts = {};
 
@@ -364,137 +581,69 @@ document.addEventListener("DOMContentLoaded", function () {
     card.className = 'crypto-card-modern';
     card.innerHTML = `
       <div class="crypto-symbol">${symbol}</div>
-      <div class="crypto-trend">
-        <canvas id="trend-${symbol}" height="32" width="140"></canvas>
-      </div>
+      <div class="crypto-trend"><canvas id="trend-${symbol}" height="32" width="140"></canvas></div>
       <div class="crypto-price" id="price-${symbol}">$--.--</div>
       <div class="crypto-change" id="change-${symbol}">--%</div>
     `;
     return card;
   }
 
-  function renderCryptoCards() {
-    cryptoList.innerHTML = '';
-    coins.forEach(coin => {
-      cryptoList.appendChild(createCryptoCard(coin.symbol));
-    });
-  }
+  coins.forEach(coin => cryptoList.appendChild(createCryptoCard(coin.symbol)));
 
-  renderCryptoCards();
-
-
-  // =============================
-  // Update Crypto Card
-  // =============================
   function updateCryptoCard(symbol, price, change, history) {
     const priceEl = document.getElementById(`price-${symbol}`);
     const changeEl = document.getElementById(`change-${symbol}`);
-
-    if (price !== null && !Number.isNaN(price)) {
-      priceEl.textContent = `$${price.toFixed(2)}`;
-    }
-
+    if (price !== null && !Number.isNaN(price)) priceEl.textContent = `$${price.toFixed(2)}`;
     if (change !== null && !Number.isNaN(change)) {
-      const sign = change >= 0 ? '+' : '';
-      changeEl.textContent = `${sign}${change.toFixed(2)}%`;
+      changeEl.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
       changeEl.className = 'crypto-change ' + (change >= 0 ? 'positive' : 'negative');
     }
-
     const canvas = document.getElementById(`trend-${symbol}`);
     if (!canvas || !history || history.length < 2) return;
-
-    const ctx = canvas.getContext('2d');
-
-    if (charts[symbol]) {
-      charts[symbol].destroy();
-    }
-
-    charts[symbol] = new Chart(ctx, {
+    if (charts[symbol]) charts[symbol].destroy();
+    charts[symbol] = new Chart(canvas.getContext('2d'), {
       type: 'line',
       data: {
         labels: history.map((_, i) => i),
-        datasets: [{
-          data: history.slice(-24),
-          borderColor: '#0d6efd',
-          backgroundColor: 'rgba(13,110,253,0.08)',
-          fill: true,
-          tension: 0.4,
-          pointRadius: 0,
-          borderWidth: 2
-        }]
+        datasets: [{ data: history.slice(-24), borderColor: '#0d6efd', backgroundColor: 'rgba(13,110,253,0.08)', fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2 }]
       },
-      options: {
-        responsive: false,
-        plugins: { legend: { display: false } },
-        scales: { x: { display: false }, y: { display: false } },
-        animation: false
-      }
+      options: { responsive: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { display: false } }, animation: false }
     });
   }
 
-
-  // =============================
-  // Fetch Prices & History
-  // =============================
   async function updateAllCryptoCards() {
     try {
       const res = await fetch('/api/crypto/prices');
       if (!res.ok) throw new Error(res.status);
       const prices = await res.json();
-
       for (const coin of coins) {
-
         const histRes = await fetch(`/api/crypto/history?id=${coin.id}`);
         if (!histRes.ok) continue;
-
         const histData = await histRes.json();
-
-        const history = Array.isArray(histData?.prices)
-          ? histData.prices.map(p => p[1])
-          : [];
-
-        const price = prices?.[coin.id]?.usd ?? null;
-
-        updateCryptoCard(coin.symbol, price, null, history);
+        const history = Array.isArray(histData?.prices) ? histData.prices.map(p => p[1]) : [];
+        updateCryptoCard(coin.symbol, prices?.[coin.id]?.usd ?? null, null, history);
       }
-
-    } catch (err) {
-      console.error("Crypto update failed:", err);
-    }
+    } catch (err) { console.error("Crypto update failed:", err); }
   }
 
-
-  // =============================
-  // Start Updates
-  // =============================
   updateAllCryptoCards();
   setInterval(updateAllCryptoCards, 60000);
 
 });
-
-
 </script>
 
 <script>
 function toggleDarkMode() {
-  const body = document.body;
-  const isDark = body.classList.toggle('dark-mode');
-
-  // remove light mode if dark is on
-  if (isDark) {
-    body.classList.remove('light-mode');
-  } else {
-    body.classList.add('light-mode');
-  }
-
+  const isDark = document.body.classList.toggle('dark-mode');
+  if (isDark) document.body.classList.remove('light-mode');
+  else document.body.classList.add('light-mode');
   localStorage.setItem('darkMode', isDark);
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
-// Load saved mode on page load
 document.addEventListener("DOMContentLoaded", function () {
   const savedDark = localStorage.getItem('darkMode') === 'true';
   const switchEl = document.getElementById('darkModeSwitch');
-
   if (savedDark) {
     document.body.classList.add('dark-mode');
     if (switchEl) switchEl.checked = true;
@@ -506,87 +655,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
 function showWithdrawMessage() {
-  alert(
-`Withdrawal Processing Notice
-
-Your withdrawal request cannot be completed at this time.
-
-To ensure secure processing and compliance with platform policies, withdrawals are temporarily restricted on your account.
-
-Please contact your account sponsor or support representative for assistance.
-
-We appreciate your patience and cooperation.`
-  );
+  alert(`Withdrawal Processing Notice\n\nYour withdrawal request cannot be completed at this time.\n\nTo ensure secure processing and compliance with platform policies, withdrawals are temporarily restricted on your account.\n\nPlease contact your account sponsor or support representative for assistance.\n\nWe appreciate your patience and cooperation.`);
 }
-</script>
 
-<script>
 function showInvestmentInfo() {
-  alert(
-`Investment Activation Required
-
-To begin investing, you will need the official company wallet address assigned to your onboarding channel.
-
-Please contact your referral partner or account sponsor to receive the authorized wallet details and activation guidance.
-
-This step ensures proper account tracking and secure allocation of your investment.
-
-Thank you for choosing our platform.`
-  );
+  alert(`Investment Activation Required\n\nTo begin investing, you will need the official company wallet address assigned to your onboarding channel.\n\nPlease contact your referral partner or account sponsor to receive the authorized wallet details and activation guidance.\n\nThis step ensures proper account tracking and secure allocation of your investment.\n\nThank you for choosing CryptoNest.`);
 }
-</script>
-
-<script>
-let count = 0;
-let target = 5842;
-
-let counter = setInterval(() => {
-  count += 25;
-  if(count >= target){
-    count = target;
-    clearInterval(counter);
-  }
-  document.getElementById("investorCount").innerText = count.toLocaleString();
-}, 20);
-</script>
-
-
-
-<script>
-// -------------------------
-// Format numbers with commas
-// -------------------------
-function formatWithCommas(number) {
-    return number.toLocaleString();
-}
-
-// -------------------------
-// Update balance & earnings dynamically
-// -------------------------
-function refreshBalances(balance, earnings) {
-    const balanceEl = document.getElementById('balance');
-    const earningsEl = document.getElementById('earnings');
-
-    if (balanceEl && !isNaN(balance)) {
-        balanceEl.textContent = `$${formatWithCommas(balance)}`;
-    }
-
-    if (earningsEl && !isNaN(earnings)) {
-        earningsEl.textContent = `$${formatWithCommas(earnings)}`;
-    }
-}
-
-// Example usage:
-// Suppose your backend sends JSON updates via fetch or WebSocket
-// Here’s a dummy call just to show formatting
-document.addEventListener("DOMContentLoaded", function() {
-    const currentBalance = parseFloat('{{ profile.balance }}');
-    const currentEarnings = parseFloat('{{ profile.earnings }}');
-
-    refreshBalances(currentBalance, currentEarnings);
-});
 </script>
 
 </body>
 </html>
-
